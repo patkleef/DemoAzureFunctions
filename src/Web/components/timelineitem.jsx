@@ -99,7 +99,7 @@ export default class TimelineItem extends React.Component {
                     <div>
                         <h3>Nearby Places</h3>
                         <ul className="timeline-places">
-                            {this.props.item.Places.map((item, i) => (
+                            {this.props.item.Places.slice(0, 3).map((item, i) => (
                                     this.renderPlaceImage(item, i)
                             ))}    
                         </ul>

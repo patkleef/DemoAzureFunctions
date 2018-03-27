@@ -20,35 +20,26 @@ namespace Demo.Functions.Beacon
     {
         [FunctionName("BeaconWebhookFunction")]
         public static async Task Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "BeaconWebhookFunction")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "BeaconWebhookFunction")]BeaconDataList beacons,
             [Queue("beacon-received-queue", Connection = "AzureWebJobsStorage")] IAsyncCollector<BeaconData> items,
             TraceWriter log,
             CancellationToken token)
         {
-            var jsonContent = await req.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(jsonContent))
+            if (beacons != null)
             {
-                var beacons = JsonConvert.DeserializeObject<BeaconDataList>(jsonContent);
-                if (beacons != null)
+                foreach (var beacon in beacons.Beacons)
                 {
-                    foreach (var beacon in beacons.Beacons)
+                    beacon.Identifier = GetBeaconIdentifier(beacon);
+
+                    if (!IsAlreadyDiscovered(beacon))
                     {
-                        beacon.Identifier = GetBeaconIdentifier(beacon);
+                        SaveInLogTable(beacon);
 
-                        if (!IsAlreadyDiscovered(beacon))
-                        {
-                            SaveInLogTable(beacon);
-
-                            await items.AddAsync(beacon, token);
-                        }
-                        else
-                        {
-                            LogHelper.Log(log, $"BeaconWebhookFunction called: beacon: {Newtonsoft.Json.JsonConvert.SerializeObject(beacon)}");
-                        }
+                        await items.AddAsync(beacon, token);
                     }
                 }
             }
-            LogHelper.Log(log, $"BeaconWebhookFunction called: {jsonContent}");
+            LogHelper.Log(log, $"BeaconWebhookFunction called: {Newtonsoft.Json.JsonConvert.SerializeObject(beacons)}");
 
             await items.FlushAsync(token);
         }

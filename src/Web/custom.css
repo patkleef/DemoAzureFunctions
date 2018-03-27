@@ -141,7 +141,7 @@
   .page-header h1 {
     text-align:center;
   }
-  
+
   .timeline-places {
     list-style:none;
     padding-top:15px;
@@ -173,4 +173,7 @@
 .modal-title {
   text-align: center;
   font-size: 20px;
+}
+.placeImage { 
+  width: 100%;
 }

@@ -40,24 +40,24 @@ export default class PlaceModal extends React.Component {
                             <div>
                             <Carousel>
                             {this.props.item.Photos.map((item, i) => (
-                                <Carousel.Item>
-                                    <img src={item.Url} />
+                                <Carousel.Item key={i}>
+                                    <img className="placeImage" src={item.Url} />
                                     <Carousel.Caption>
-                                        <div class="carousel-caption-text">                                    
+                                        <div className="carousel-caption-text">                                    
                                             {item.Captions.map((caption, i) => (
-                                                <h3>"{caption}"</h3>
+                                                <h3 key={i}>"{caption}"</h3>
                                             ))}   
 
                                             <p><strong>Categories</strong></p> 
                                             <div className="place-modal-photos-tags">
                                                 {item.Categories.map((category, i) => (
-                                                    <i>{category}, </i> 
+                                                    <i key={i}>{category}, </i> 
                                                 ))}   
                                             </div>  
                                             <p><strong>Tags</strong></p>
                                             <div className="place-modal-photos-tags">
                                                 {item.Tags.map((tag, i) => (
-                                                    <i>{tag}, </i> 
+                                                    <i key={i}>{tag}, </i> 
                                                 ))}   
                                             </div> 
                                         </div>
