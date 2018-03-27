@@ -52,4 +52,3 @@ window.fetch('https://demoazurefunctions1.azurewebsites.net/api/WebDataFunction?
         });
     
 });
-

@@ -30,17 +30,17 @@ namespace Demo.Functions.Public
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
                     DateTimeOffset.Now.ToString("ddMMyyyy")));
 
-            var result = table.ExecuteQuery(query);
+            var result = table.ExecuteQuery(query).ToList();
 
-            if (result == null || !result.Any())
+            if (!result.Any())
             {
                 query = new TableQuery<LocationStorage>();
 
                 result = table.ExecuteQuery(query)
-                    .GroupBy(x => x.Name).Select(x => x.First());
+                    .GroupBy(x => x.Name).Select(x => x.First()).ToList();
             }
             var response = req.CreateResponse(HttpStatusCode.OK,
-                result.Select(x => Newtonsoft.Json.JsonConvert.DeserializeObject<LocationInfo>(x.Data)));
+                result.Select(x => Newtonsoft.Json.JsonConvert.DeserializeObject<LocationInfo>(x.Data)).OrderByDescending(x => x.Date).ToList());
 
             return response;
         }

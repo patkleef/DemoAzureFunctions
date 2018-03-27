@@ -2,7 +2,7 @@
 
 namespace Demo.Functions.Beacon
 {
-    public class Paramaters
+    public class IbeaconParameters
     {
         public int Major { get; set; }
         public int Minor { get; set; }

@@ -4,10 +4,15 @@ namespace Demo.Functions.Beacon
 {
     public class BeaconData
     {
+        public string Identifier { get; set; }
         public string BeaconAddress { get; set; }
         public string BeaconType { get; set; }
         [JsonProperty("ibeaconData")]
-        public Paramaters Data { get; set; }
+        public IbeaconParameters IbeaconData { get; set; }
+
+        [JsonProperty("eddystoneUidData")]
+        public EddystoneParameters EddyStoneData { get; set; }
+
         public bool IsBlocked { get; set; }
         public long LastMinuteSeen { get; set; }
         public long LastSeen { get; set; }

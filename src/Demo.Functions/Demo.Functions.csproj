@@ -34,7 +34,4 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Public\" />
-  </ItemGroup>
 </Project>

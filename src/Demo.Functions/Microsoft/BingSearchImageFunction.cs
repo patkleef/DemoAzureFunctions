@@ -19,7 +19,7 @@ namespace Demo.Functions.Microsoft
         private static string _bingImageServiceApiKey => Environment.GetEnvironmentVariable("BingImageServiceApiKey", EnvironmentVariableTarget.Process);
         private static readonly string _cognitiveServiceBaseUrl = "https://api.cognitive.microsoft.com";
         private static IImageService _imageService => RestService.For<IImageService>(_cognitiveServiceBaseUrl);
-        private static IStorageService _storageService = new StorageService();
+        private static readonly IStorageService _storageService = new StorageService();
 
         [FunctionName("BingSearchImageFunction")]
         [return: Queue("image-vision-queue", Connection = "AzureWebJobsStorage")]

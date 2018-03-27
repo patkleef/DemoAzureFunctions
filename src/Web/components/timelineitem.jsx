@@ -23,11 +23,41 @@ export default class TimelineItem extends React.Component {
         super(props);
     }
 
+    formatTime(str) {
+        var date = new Date(str);
+
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+
+        var result = (hours < 10 ?  '0' + hours : hours);
+        
+        result = result + (minutes < 10 ? ':0' + minutes : ':' + minutes);
+
+        return result;
+    }
+
+    renderPlaceImage(item, i) {
+        if(item.Photos !== null && item.Photos.length > 0 && item.Photos[0] !== null) {
+            return (
+                <li key={i}>
+                    <p><strong>{item.Name}</strong></p>
+                    <img src={item.Photos[0].Url} className="timeline-place-image" />   
+                    <div className="timeline-place-types">
+                        {item.Types.map((type, j) => (
+                            <span key={j}><i>{type}</i> | </span>
+                        ))}       
+                    </div> 
+                    <a href="#" onClick={() => this.props.openModal(item)}>More</a>                               
+                </li>
+            );
+        }
+    }
+
     render() {
         return (
             <li className={this.props.inverted ? "timeline-inverted" : ""}>
                 <div className="timeline-badge">
-                    <span className="badge-time">20:13</span>
+                    <span className="badge-time">{this.formatTime(this.props.item.Date)}</span> 
                 </div>
                 <div className="timeline-panel">
                     <div className="timeline-heading">
@@ -70,16 +100,7 @@ export default class TimelineItem extends React.Component {
                         <h3>Nearby Places</h3>
                         <ul className="timeline-places">
                             {this.props.item.Places.map((item, i) => (
-                                <li key={i}>
-                                    <p><strong>{item.Name}</strong></p>
-                                    <img src={item.Photos[1].Url} className="timeline-place-image" />   
-                                    <div className="timeline-place-types">
-                                        {item.Types.map((type, j) => (
-                                            <span key={j}><i>{type}</i> | </span>
-                                        ))}       
-                                    </div> 
-                                    <a href="#" onClick={() => this.props.openModal(item)}>More</a>                               
-                                </li>
+                                    this.renderPlaceImage(item, i)
                             ))}    
                         </ul>
                     </div>

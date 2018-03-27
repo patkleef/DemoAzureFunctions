@@ -14,9 +14,9 @@ namespace Demo.Functions.Microsoft
     public static class ImageVisionFunction
     {
         private static string _imageVisionServiceApiKey => Environment.GetEnvironmentVariable("ImageVisionServiceApiKey", EnvironmentVariableTarget.Process);
-        private static readonly string _cognitiveServiceBaseUrl = "https://westeurope.api.cognitive.microsoft.com";
         private static IImageService _imageService => RestService.For<IImageService>(_cognitiveServiceBaseUrl);
-        private static IStorageService _storageService = new StorageService();
+        private static readonly string _cognitiveServiceBaseUrl = "https://westeurope.api.cognitive.microsoft.com";
+        private static readonly IStorageService _storageService = new StorageService();
 
         [FunctionName("ImageVisionApi")]
         [return: Queue("completed-queue", Connection = "AzureWebJobsStorage")]
@@ -37,18 +37,26 @@ namespace Demo.Functions.Microsoft
 
                             stream.Seek(0, SeekOrigin.Begin);
 
-                            var response = await _imageService.GetInfo(stream, _imageVisionServiceApiKey);
-                            if (response != null)
+                            try
                             {
-                                image.Tags = response.description?.tags;
-                                image.Captions = response.description?.captions?.Select(x => x.text).ToArray();
-                                image.Categories = response.categories?.Select(x => x.name).ToArray();
+                                var response = await _imageService.GetInfo(stream, _imageVisionServiceApiKey);
+                                if (response != null)
+                                {
+                                    image.Tags = response.description?.tags;
+                                    image.Captions = response.description?.captions?.Select(x => x.text).ToArray();
+                                    image.Categories = response.categories?.Select(x => x.name).ToArray();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.Log(log, $"ImageVisionFunction function exception occurred: {ex.Message}");
+
+                                return null;
                             }
                         }
                     }
                 }
             }
-            
             LogHelper.Log(log, $"ImageVisionFunction function processed: {Newtonsoft.Json.JsonConvert.SerializeObject(locationInfo)}");
 
             return locationInfo;
